@@ -96,7 +96,7 @@ public class frmMain extends javax.swing.JFrame {
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
-        jMenuItem2 = new javax.swing.JMenuItem();
+        btnDocs = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -366,13 +366,13 @@ public class frmMain extends javax.swing.JFrame {
 
         jMenu2.setText("About");
 
-        jMenuItem2.setText("Hướng dẫn sử dụng");
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+        btnDocs.setText("Hướng dẫn sử dụng");
+        btnDocs.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
+                btnDocsActionPerformed(evt);
             }
         });
-        jMenu2.add(jMenuItem2);
+        jMenu2.add(btnDocs);
 
         jMenuBar1.add(jMenu2);
 
@@ -486,7 +486,7 @@ public class frmMain extends javax.swing.JFrame {
         }
         
         try {
-            URL                 URLStart = new URL("");
+            URL                 URLStart = new URL("http://httpbin.org");
             HttpURLConnection   connection = (HttpURLConnection) URLStart.openConnection();
             
             // Lấy parameter từ bảng
@@ -621,13 +621,13 @@ public class frmMain extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+    private void btnDocsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDocsActionPerformed
         try {
-            openWebpage(new URL("https://google.com"));
+            openWebpage(new URL("https://github.com/mrsugar/japi"));
         } catch (MalformedURLException ex) {
             Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
+    }//GEN-LAST:event_btnDocsActionPerformed
 
     private void StringParamtoTable(){
         if(txtParameter.getSelectedItem() != null){
@@ -670,6 +670,7 @@ public class frmMain extends javax.swing.JFrame {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCopy;
+    private javax.swing.JMenuItem btnDocs;
     private javax.swing.JButton btnHeaderAdd;
     private javax.swing.JButton btnHeaderDelete;
     private javax.swing.JButton btnHeaderOK;
@@ -689,7 +690,6 @@ public class frmMain extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
