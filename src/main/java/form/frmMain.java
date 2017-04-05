@@ -493,7 +493,7 @@ public class frmMain extends javax.swing.JFrame {
             String urlParameters = "";
             for(int i = 0; i < tblParameter.getRowCount(); i++ ){
                 if(tblParameter.getValueAt(i, 2).equals(true)){
-                    urlParameters = urlParameters + tblParameter.getValueAt(i, 0) + "=" + tblParameter.getValueAt(i, 1) + "&";
+                    urlParameters = urlParameters + tblParameter.getValueAt(i, 0) + "=" + tblParameter.getValueAt(i, 1).toString().replace(" ", "%20") + "&";
                 }
             }
             byte[] postData       = urlParameters.getBytes( StandardCharsets.UTF_8 );
@@ -510,7 +510,7 @@ public class frmMain extends javax.swing.JFrame {
                     wr.writeBytes(urlParameters);
                     wr.flush();
                 }
-            }else {
+            }else {                        
                 URL url = new URL(cURL + "?" + urlParameters);
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setDoOutput(true);
