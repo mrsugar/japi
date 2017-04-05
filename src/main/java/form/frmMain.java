@@ -33,10 +33,9 @@ public class frmMain extends javax.swing.JFrame {
         initComponents();
         
         // Hiện giữa màn hình
-        //this.setLocationRelativeTo(null);
+        this.setLocationRelativeTo(null);
         
         // Xử lý
-        
         // Nút GET POST
         ButtonGroup method = new ButtonGroup();
         method.add(rdGET);
@@ -451,7 +450,6 @@ public class frmMain extends javax.swing.JFrame {
     private void btnParameterAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnParameterAddActionPerformed
         // TODO add your handling code here:
         ((DefaultTableModel) tblParameter.getModel()).addRow(new Object[]{"", "", true});
-                
         tblParameter.requestFocus();
         tblParameter.editCellAt(tblParameter.getRowCount() - 1, 0);
         tblParameter.requestFocus();
@@ -459,13 +457,12 @@ public class frmMain extends javax.swing.JFrame {
 
     private void btnParameterDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnParameterDeleteActionPerformed
         // TODO add your handling code here:
-        DefaultTableModel removeRow = (DefaultTableModel) tblParameter.getModel();
         int[] rows = tblParameter.getSelectedRows();
         if( rows.length == 0 ) {
-            JOptionPane.showMessageDialog(null,"Vui lòng chọn ít nhất 1 hàng để xóa","Lỗi xảy ra",JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Vui lòng chọn ít nhất 1 hàng để xóa", "Lỗi xảy ra", JOptionPane.WARNING_MESSAGE);
         }else {
             for(int i = 0; i < rows.length; i++)
-                removeRow.removeRow(rows[i] - i);
+                ((DefaultTableModel) tblParameter.getModel()).removeRow(rows[i] - i);
         }
     }//GEN-LAST:event_btnParameterDeleteActionPerformed
 
@@ -482,18 +479,14 @@ public class frmMain extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null,"Vui lòng điền URL để lấy dữ liệu","Lỗi xảy ra",JOptionPane.WARNING_MESSAGE);
         }else {
             cURL = txtURL.getSelectedItem().toString();
-            
             Boolean duplicateURL = false;
-            for(int i = 0; i < txtURL.getItemCount(); i++){
+            for(int i = 0; i < txtURL.getItemCount(); i++)
                 if(txtURL.getItemAt(i).equals(cURL))  duplicateURL = true;
-            }
             if(duplicateURL != true) txtURL.addItem(cURL);
-            
         }
         
         try {
-            String              sURLStart = "http://tuvangoicuoc.com";
-            URL                 URLStart = new URL(sURLStart);
+            URL                 URLStart = new URL("");
             HttpURLConnection   connection = (HttpURLConnection) URLStart.openConnection();
             
             // Lấy parameter từ bảng
@@ -547,12 +540,9 @@ public class frmMain extends javax.swing.JFrame {
             
             try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
                 String inputLine;
-                
                 while ((inputLine = in.readLine()) != null)
                       txtKetqua.setText(txtKetqua.getText() + inputLine + "\r\n");
-                
             }
-             
         } catch (MalformedURLException ex) {
             Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -568,69 +558,59 @@ public class frmMain extends javax.swing.JFrame {
     }//GEN-LAST:event_btnParameterStringActionPerformed
 
     private void btnParameterString1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnParameterString1ActionPerformed
-        // TODO add your handling code here:
         if (txtParameter.getSelectedItem() == null){
             JOptionPane.showMessageDialog(null,"Vui lòng điền tham số","Lỗi xảy ra",JOptionPane.WARNING_MESSAGE);
         }else {
             Boolean duplicateParam = false;
-            for(int i = 0; i < txtParameter.getItemCount(); i++){
+            for(int i = 0; i < txtParameter.getItemCount(); i++)
                 if(txtParameter.getItemAt(i).equals(txtParameter.getSelectedItem().toString()))  duplicateParam = true;
-            }
             if(duplicateParam != true) txtParameter.addItem(txtParameter.getSelectedItem().toString());
             StringParamtoTable();
         }
     }//GEN-LAST:event_btnParameterString1ActionPerformed
 
     private void btnHeaderDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHeaderDeleteActionPerformed
-        // TODO add your handling code here:
-        DefaultTableModel removeRow = (DefaultTableModel) tblHeader.getModel();
         int[] rows = tblHeader.getSelectedRows();
         if( rows.length == 0 ) {
             JOptionPane.showMessageDialog(null,"Vui lòng chọn ít nhất 1 hàng để xóa","Lỗi xảy ra",JOptionPane.WARNING_MESSAGE);
         }else {
             for(int i = 0; i < rows.length; i++)
-                removeRow.removeRow(rows[i] - i);
+                ((DefaultTableModel) tblHeader.getModel()).removeRow(rows[i] - i);
         }
     }//GEN-LAST:event_btnHeaderDeleteActionPerformed
 
     private void btnHeaderOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHeaderOKActionPerformed
-        // TODO add your handling code here:
         if (txtHeader.getSelectedItem() == null){
             JOptionPane.showMessageDialog(null,"Vui lòng điền tham số","Lỗi xảy ra",JOptionPane.WARNING_MESSAGE);
         }else {
             Boolean duplicateHeader = false;
-            for(int i = 0; i < tblHeader.getRowCount(); i++){
+            for(int i = 0; i < tblHeader.getRowCount(); i++)
                 if(tblHeader.getValueAt(i, 0).equals(txtHeader.getSelectedItem().toString())) duplicateHeader = true;
-            }
             if(duplicateHeader != true) ((DefaultTableModel) tblHeader.getModel()).addRow(new Object[]{txtHeader.getSelectedItem().toString(), "", true});
         }
     }//GEN-LAST:event_btnHeaderOKActionPerformed
 
     private void btnHeaderAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHeaderAddActionPerformed
-        // TODO add your handling code here:
         ((DefaultTableModel) tblHeader.getModel()).addRow(new Object[]{"", "", true});
-                
         tblHeader.requestFocus();
         tblHeader.editCellAt(tblHeader.getRowCount() - 1, 0);
         tblHeader.requestFocus();
     }//GEN-LAST:event_btnHeaderAddActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        // TODO add your handling code here:
         JFileChooser fileChooser = new JFileChooser();
         if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
           File file = fileChooser.getSelectedFile();
           try{
-                PrintWriter writer = new PrintWriter(file, "UTF-8");
-                writer.print(txtKetqua.getText());
-                writer.close();
-                JOptionPane.showMessageDialog(null, "Đã lưu thành công", "Kết quả",JOptionPane.INFORMATION_MESSAGE);
+              try (PrintWriter writer = new PrintWriter(file, "UTF-8")) {
+                  writer.print(txtKetqua.getText());
+              }
+              JOptionPane.showMessageDialog(null, "Đã lưu thành công", "Kết quả",JOptionPane.INFORMATION_MESSAGE);
             } catch (IOException e) {}
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnCopyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCopyActionPerformed
-        // TODO add your handling code here:
         StringSelection stringSelection = new StringSelection(txtKetqua.getText());
         Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
         clpbrd.setContents(stringSelection, null);
@@ -638,13 +618,11 @@ public class frmMain extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCopyActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        // TODO add your handling code here:
         System.exit(0);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         try {
-            // TODO add your handling code here:
             openWebpage(new URL("https://google.com"));
         } catch (MalformedURLException ex) {
             Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
@@ -656,13 +634,11 @@ public class frmMain extends javax.swing.JFrame {
             String[] params = txtParameter.getSelectedItem().toString().split("&", -1);
             
             if(params[0].split("=", -1).length == 2){
-                for (int i = (tblParameter.getRowCount() - 1); i >= 0; i--){
+                for (int i = (tblParameter.getRowCount() - 1); i >= 0; i--)
                     ((DefaultTableModel) tblParameter.getModel()).removeRow(i);
-                }
             }
 
             for (String param : params) {
-                //JOptionPane.showMessageDialog(null, param, "Lỗi xảy ra",JOptionPane.WARNING_MESSAGE);
                 String[] parameter = param.split("=", -1);
                 if(parameter.length == 2) ((DefaultTableModel) tblParameter.getModel()).addRow(new Object[]{parameter[0], parameter[1], true});
             }
@@ -727,6 +703,7 @@ public class frmMain extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> txtParameter;
     private javax.swing.JComboBox<String> txtURL;
     // End of variables declaration//GEN-END:variables
+    
     public static void openWebpage(URI uri) {
         Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
         if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
