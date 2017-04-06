@@ -77,7 +77,6 @@ public class frmMain extends javax.swing.JFrame {
         Boolean duplicateHeader = false;
         for(int i = 0; i < tblHeader.getRowCount(); i++)
             if(key.equals(tblHeader.getValueAt(i, 0))) duplicateHeader = true;
-                    
         if(duplicateHeader == false)
             ((DefaultTableModel) tblHeader.getModel()).addRow(new Object[]{key, value, true});
             
