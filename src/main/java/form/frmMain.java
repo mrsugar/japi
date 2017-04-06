@@ -6,18 +6,24 @@
 package form;
 
 import java.awt.Desktop;
+import java.awt.Point;
 import javax.swing.*;
 import javax.swing.table.*;
 
 import java.net.*;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 // Cho copy clipboard
 import java.awt.datatransfer.*;
 import java.awt.Toolkit;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -53,6 +59,28 @@ public class frmMain extends javax.swing.JFrame {
         txtURL.addItem("http://httpbin.org/get");
         txtURL.addItem("http://httpbin.org/post");
         
+        toggleDebugMode(true);
+
+        tblDebug.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent me) {
+                JTable table = (JTable) me.getSource();
+                Point p = me.getPoint();
+                int row = table.rowAtPoint(p);
+                if (me.getClickCount() == 2)
+                    AddDebugToHeader(tblDebug.getValueAt(row, 0).toString(), tblDebug.getValueAt(row, 1).toString());
+            }
+        });
+    }
+    
+    private void AddDebugToHeader(String key, String value){
+        Boolean duplicateHeader = false;
+        for(int i = 0; i < tblHeader.getRowCount(); i++)
+            if(key.equals(tblHeader.getValueAt(i, 0))) duplicateHeader = true;
+                    
+        if(duplicateHeader == false)
+            ((DefaultTableModel) tblHeader.getModel()).addRow(new Object[]{key, value, true});
+            
     }
 
     /**
@@ -92,9 +120,13 @@ public class frmMain extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         tblHeader = new javax.swing.JTable();
         btnHeaderOK = new javax.swing.JButton();
+        chkDebug = new javax.swing.JCheckBox();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        tblDebug = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        chkDebugMenu = new javax.swing.JCheckBoxMenuItem();
+        btnExit = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         btnDocs = new javax.swing.JMenuItem();
 
@@ -102,7 +134,7 @@ public class frmMain extends javax.swing.JFrame {
         setTitle("jAPI 1.5");
         setResizable(false);
 
-        jLabel1.setFont(new java.awt.Font("Lucida Grande", 0, 15)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Lucida Grande", 0, 14)); // NOI18N
         jLabel1.setText("Đường dẫn URL:");
 
         jLabel2.setText("Phương thức:");
@@ -111,7 +143,7 @@ public class frmMain extends javax.swing.JFrame {
 
         rdGET.setText("GET");
 
-        txtKetqua.setColumns(20);
+        txtKetqua.setColumns(75);
         txtKetqua.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
         txtKetqua.setLineWrap(true);
         txtKetqua.setRows(5);
@@ -353,16 +385,54 @@ public class frmMain extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jMenu1.setText("File");
-
-        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/delete.png"))); // NOI18N
-        jMenuItem1.setText("Thoát");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        chkDebug.setText("Chế độ Debug");
+        chkDebug.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                chkDebugActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem1);
+
+        tblDebug.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Key", "Giá trị"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblDebug.setIntercellSpacing(new java.awt.Dimension(10, 10));
+        tblDebug.setRowHeight(26);
+        jScrollPane4.setViewportView(tblDebug);
+
+        jMenu1.setText("File");
+
+        chkDebugMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.CTRL_MASK));
+        chkDebugMenu.setSelected(true);
+        chkDebugMenu.setText("Chế độ debug");
+        chkDebugMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/debug.png"))); // NOI18N
+        chkDebugMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkDebugMenuActionPerformed(evt);
+            }
+        });
+        jMenu1.add(chkDebugMenu);
+
+        btnExit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/delete.png"))); // NOI18N
+        btnExit.setText("Thoát");
+        btnExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExitActionPerformed(evt);
+            }
+        });
+        jMenu1.add(btnExit);
 
         jMenuBar1.add(jMenu1);
 
@@ -389,30 +459,35 @@ public class frmMain extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addComponent(jLabel6)
-                        .addGap(18, 18, 18)
+                        .addGap(4, 4, 4)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2)
+                                .addGap(14, 14, 14)
+                                .addComponent(jLabel6)
                                 .addGap(18, 18, 18)
-                                .addComponent(rdGET)
-                                .addGap(18, 18, 18)
-                                .addComponent(rdPOST))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel1)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel2)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(rdGET)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(rdPOST)
+                                        .addGap(105, 105, 105)
+                                        .addComponent(chkDebug))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(txtURL, javax.swing.GroupLayout.PREFERRED_SIZE, 1064, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(btnSend, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(txtURL, javax.swing.GroupLayout.PREFERRED_SIZE, 1064, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnSend, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addComponent(jInternalFrame1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(jInternalFrame2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 10, Short.MAX_VALUE))))
+                                .addComponent(jInternalFrame2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jScrollPane2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane4)))
+                        .addGap(6, 6, 6))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -431,15 +506,19 @@ public class frmMain extends javax.swing.JFrame {
                                 .addGap(4, 4, 4)
                                 .addComponent(jLabel2))
                             .addComponent(rdGET)
-                            .addComponent(rdPOST)))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(rdPOST)
+                                .addComponent(chkDebug))))
                     .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jInternalFrame1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jInternalFrame2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(5, 5, 5))
         );
@@ -471,6 +550,8 @@ public class frmMain extends javax.swing.JFrame {
         
         // Reset kết quả cho lần chạy mới
         txtKetqua.setText("");
+        for (int i = (tblDebug.getRowCount() - 1); i >= 0; i--)
+                    ((DefaultTableModel) tblDebug.getModel()).removeRow(i);
         
         // Xử lý:
         String cURL = "";
@@ -486,26 +567,20 @@ public class frmMain extends javax.swing.JFrame {
         }
         
         try {
-            URL                 URLStart = new URL("http://httpbin.org");
-            HttpURLConnection   connection = (HttpURLConnection) URLStart.openConnection();
-            
+            HttpURLConnection   connection;
+                        
             // Lấy parameter từ bảng
-            String urlParameters = "";
+            String urlParameters  = "";
             for(int i = 0; i < tblParameter.getRowCount(); i++ ){
-                if(tblParameter.getValueAt(i, 2).equals(true)){
+                if(tblParameter.getValueAt(i, 2).equals(true))
                     urlParameters = urlParameters + tblParameter.getValueAt(i, 0) + "=" + tblParameter.getValueAt(i, 1).toString().replace(" ", "%20") + "&";
-                }
             }
-            byte[] postData       = urlParameters.getBytes( StandardCharsets.UTF_8 );
-            int    postDataLength = postData.length;
             
-            if ( rdPOST.isSelected() ){
+            if (rdPOST.isSelected()){
                 URL url = new URL(cURL);
                 connection = (HttpURLConnection) url.openConnection();
+                connection = setHTTPHeader(connection);
                 connection.setRequestMethod("POST");
-                connection.setDoOutput(true);
-                connection.setRequestProperty("Content-Length", Integer.toString( postDataLength ));
-                connection.setUseCaches(false);
                 try (DataOutputStream wr = new DataOutputStream(connection.getOutputStream())) {
                     wr.writeBytes(urlParameters);
                     wr.flush();
@@ -513,36 +588,45 @@ public class frmMain extends javax.swing.JFrame {
             }else {                        
                 URL url = new URL(cURL + "?" + urlParameters);
                 connection = (HttpURLConnection) url.openConnection();
-                connection.setDoOutput(true);
+                connection = setHTTPHeader(connection);
                 connection.setRequestMethod("GET");
-                connection.setRequestProperty("Content-Length", Integer.toString( postDataLength ));
-                connection.setUseCaches(false);
             }
-            
-            // Lấy header từ bảng
-            for(int i = 0; i < tblHeader.getRowCount(); i++ ){
-                if(tblHeader.getValueAt(i, 2).equals(true)){
-                    connection.setRequestProperty(tblHeader.getValueAt(i, 0).toString(), tblHeader.getValueAt(i, 1).toString());
+                        
+            if(!isDebugMode()){
+                switch(connection.getResponseCode()){
+                    case 403:
+                        JOptionPane.showMessageDialog(null, "Không được cấp quyền để truy cập\nVui lòng liên hệ với kĩ thuật. Mã lỗi 403", "Lỗi xảy ra",JOptionPane.WARNING_MESSAGE);
+                        break;
+                    case 404:
+                        JOptionPane.showMessageDialog(null, "Đường dẫn không tồn tại\nVui lòng kiểm tra lại đường dẫn", "Lỗi xảy ra",JOptionPane.WARNING_MESSAGE);
+                        break;
+                    case 405:
+                        JOptionPane.showMessageDialog(null, "Phương thức không được chấp nhận\nVui lòng chọn chính xác kiểu GET hoặc POST", "Lỗi xảy ra",JOptionPane.WARNING_MESSAGE);
+                        break;
                 }
-            }
-            
-            switch(connection.getResponseCode()){
-                case 403:
-                    JOptionPane.showMessageDialog(null, "Không được cấp quyền để truy cập\nVui lòng liên hệ với kĩ thuật. Mã lỗi 403", "Lỗi xảy ra",JOptionPane.WARNING_MESSAGE);
-                    break;
-                case 404:
-                    JOptionPane.showMessageDialog(null, "Đường dẫn không tồn tại\nVui lòng kiểm tra lại đường dẫn", "Lỗi xảy ra",JOptionPane.WARNING_MESSAGE);
-                    break;
-                case 405:
-                    JOptionPane.showMessageDialog(null, "Phương thức không được chấp nhận\nVui lòng chọn chính xác kiểu GET hoặc POST", "Lỗi xảy ra",JOptionPane.WARNING_MESSAGE);
-                    break;
             }
             
             try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
                 String inputLine;
                 while ((inputLine = in.readLine()) != null)
                       txtKetqua.setText(txtKetqua.getText() + inputLine + "\r\n");
-            }
+                txtKetqua.setCaretPosition(0);
+            } catch(IOException ioex){ }
+            
+            // Ghi vào tblDebug
+            ((DefaultTableModel) tblDebug.getModel()).addRow(new Object[]{ "Response", connection.getResponseCode() + " - " + connection.getResponseMessage(), true});
+
+            Map<String, List<String>> headers = connection.getHeaderFields();
+            Set<Map.Entry<String, List<String>>> entrySet = headers.entrySet();
+            entrySet.forEach((Map.Entry<String, List<String>> entry) -> {
+                String headerName = entry.getKey();
+                String headerValue = "";
+                List<String> headerValues = entry.getValue();
+                for (String value : headerValues) headerValue = value;
+                ((DefaultTableModel) tblDebug.getModel()).addRow(new Object[]{ headerName, headerValue, true});
+            });
+
+            
         } catch (MalformedURLException ex) {
             Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -550,6 +634,23 @@ public class frmMain extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnSendActionPerformed
 
+    private HttpURLConnection setHTTPHeader(HttpURLConnection connection){
+        // Lấy header từ bảng
+        for(int i = 0; i < tblHeader.getRowCount(); i++ ){
+            if(tblHeader.getValueAt(i, 2).equals(true) &&
+               tblHeader.getValueAt(i, 0).equals("") == false){
+                try {
+                    connection.setRequestProperty(tblHeader.getValueAt(i, 0).toString(), tblHeader.getValueAt(i, 1).toString());
+                } catch (Exception e) {
+
+                }
+            }
+        }
+        connection.setDoOutput(true);
+        connection.setUseCaches(false);
+        return connection;
+    }
+    
     private void btnParameterStringActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnParameterStringActionPerformed
         // TODO add your handling code here:
         txtParameter.setVisible(true);
@@ -564,6 +665,7 @@ public class frmMain extends javax.swing.JFrame {
             Boolean duplicateParam = false;
             for(int i = 0; i < txtParameter.getItemCount(); i++)
                 if(txtParameter.getItemAt(i).equals(txtParameter.getSelectedItem().toString()))  duplicateParam = true;
+            
             if(duplicateParam != true) txtParameter.addItem(txtParameter.getSelectedItem().toString());
             StringParamtoTable();
         }
@@ -599,6 +701,7 @@ public class frmMain extends javax.swing.JFrame {
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Chọn nơi lưu tập tin");
         if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
           File file = fileChooser.getSelectedFile();
           try{
@@ -617,9 +720,9 @@ public class frmMain extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(null, "Đã copy vào clipboard", "Kết quả",JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_btnCopyActionPerformed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
         System.exit(0);
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_btnExitActionPerformed
 
     private void btnDocsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDocsActionPerformed
         try {
@@ -628,6 +731,39 @@ public class frmMain extends javax.swing.JFrame {
             Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnDocsActionPerformed
+
+    
+    private boolean isDebugMode(){
+        return tblDebug.isVisible();
+    }
+    
+    private void toggleDebugMode(Boolean... b){
+        Boolean toggle = (b.length < 1) ? isDebugMode() : ! b[0];
+        if(toggle){
+            chkDebugMenu.setSelected(false);
+            chkDebug.setSelected(false);
+            tblDebug.setVisible(false);
+            jScrollPane4.setVisible(false);
+        }else {
+            chkDebugMenu.setSelected(true);
+            chkDebug.setSelected(true);
+            tblDebug.setVisible(true);
+            jScrollPane4.setVisible(true);
+        }
+        this.invalidate();
+        this.validate();
+        this.repaint();
+    }
+    
+    private void chkDebugMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkDebugMenuActionPerformed
+        // TODO add your handling code here:
+        toggleDebugMode();
+    }//GEN-LAST:event_chkDebugMenuActionPerformed
+
+    private void chkDebugActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkDebugActionPerformed
+        // TODO add your handling code here:
+        toggleDebugMode();
+    }//GEN-LAST:event_chkDebugActionPerformed
 
     private void StringParamtoTable(){
         if(txtParameter.getSelectedItem() != null){
@@ -671,6 +807,7 @@ public class frmMain extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCopy;
     private javax.swing.JMenuItem btnDocs;
+    private javax.swing.JMenuItem btnExit;
     private javax.swing.JButton btnHeaderAdd;
     private javax.swing.JButton btnHeaderDelete;
     private javax.swing.JButton btnHeaderOK;
@@ -680,6 +817,8 @@ public class frmMain extends javax.swing.JFrame {
     private javax.swing.JButton btnParameterString1;
     private javax.swing.JButton btnSave;
     private javax.swing.JButton btnSend;
+    private javax.swing.JCheckBox chkDebug;
+    private javax.swing.JCheckBoxMenuItem chkDebugMenu;
     private javax.swing.JInternalFrame jInternalFrame1;
     private javax.swing.JInternalFrame jInternalFrame2;
     private javax.swing.JLabel jLabel1;
@@ -689,13 +828,14 @@ public class frmMain extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JRadioButton rdGET;
     private javax.swing.JRadioButton rdPOST;
+    private javax.swing.JTable tblDebug;
     private javax.swing.JTable tblHeader;
     private javax.swing.JTable tblParameter;
     private javax.swing.JComboBox<String> txtHeader;
@@ -709,16 +849,14 @@ public class frmMain extends javax.swing.JFrame {
         if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
             try {
                 desktop.browse(uri);
-            } catch (IOException e) {
-            }
+            } catch (IOException e) { }
         }
     }
 
     public static void openWebpage(URL url) {
         try {
             openWebpage(url.toURI());
-        } catch (URISyntaxException e) {
-        }
+        } catch (URISyntaxException e) { }
     }
 
 }
