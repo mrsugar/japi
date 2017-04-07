@@ -24,6 +24,9 @@ import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.Inflater;
+import java.util.zip.InflaterInputStream;
 
 /**
  *
@@ -52,7 +55,7 @@ public class frmMain extends javax.swing.JFrame {
         btnParameterString1.setVisible(false);
         
         ((DefaultTableModel) tblParameter.getModel()).addRow(new Object[]{"", "", true});
-        ((DefaultTableModel) tblHeader.getModel()).addRow(new Object[]{"Accept", "text/plain", true});
+        ((DefaultTableModel) tblHeader.getModel()).addRow(new Object[]{"Accept-Encoding", "gzip,deflate", true});
         
         tblParameter.setCellSelectionEnabled(true);
 
@@ -79,7 +82,6 @@ public class frmMain extends javax.swing.JFrame {
             if(key.equals(tblHeader.getValueAt(i, 0))) duplicateHeader = true;
         if(duplicateHeader == false)
             ((DefaultTableModel) tblHeader.getModel()).addRow(new Object[]{key, value, true});
-            
     }
 
     /**
@@ -605,13 +607,31 @@ public class frmMain extends javax.swing.JFrame {
                 }
             }
             
-            try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-                String inputLine;
-                while ((inputLine = in.readLine()) != null)
-                      txtKetqua.setText(txtKetqua.getText() + inputLine + "\r\n");
-                txtKetqua.setCaretPosition(0);
-            } catch(IOException ioex){ }
-            
+            switch((connection.getContentEncoding() != null) ? connection.getContentEncoding() : ""){
+                case "gzip":
+                    try (BufferedReader in = new BufferedReader(new InputStreamReader(new GZIPInputStream(connection.getInputStream())))) {
+                        String inputLine;
+                        while ((inputLine = in.readLine()) != null)
+                              txtKetqua.setText(txtKetqua.getText() + inputLine + "\r\n");
+                    } catch(IOException ex){}
+                    break;
+                case "deflate":
+                    try (BufferedReader in = new BufferedReader(new InputStreamReader(new InflaterInputStream(connection.getInputStream())))) {
+                        String inputLine;
+                        while ((inputLine = in.readLine()) != null)
+                              txtKetqua.setText(txtKetqua.getText() + inputLine + "\r\n");
+                    } catch(Exception ex){}
+                    break;
+                default:
+                    try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                        String inputLine;
+                        while ((inputLine = in.readLine()) != null)
+                              txtKetqua.setText(txtKetqua.getText() + inputLine + "\r\n");
+                    }
+                    break;
+            }
+            txtKetqua.setCaretPosition(0);
+
             // Ghi vào tblDebug
             ((DefaultTableModel) tblDebug.getModel()).addRow(new Object[]{ "Response", connection.getResponseCode() + " - " + connection.getResponseMessage(), true});
 
@@ -640,9 +660,7 @@ public class frmMain extends javax.swing.JFrame {
                tblHeader.getValueAt(i, 0).equals("") == false){
                 try {
                     connection.setRequestProperty(tblHeader.getValueAt(i, 0).toString(), tblHeader.getValueAt(i, 1).toString());
-                } catch (Exception e) {
-
-                }
+                } catch (Exception e) {}
             }
         }
         connection.setDoOutput(true);
