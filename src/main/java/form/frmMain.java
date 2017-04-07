@@ -613,14 +613,14 @@ public class frmMain extends javax.swing.JFrame {
                         String inputLine;
                         while ((inputLine = in.readLine()) != null)
                               txtKetqua.setText(txtKetqua.getText() + inputLine + "\r\n");
-                    } catch(IOException ex){}
+                    }
                     break;
                 case "deflate":
                     try (BufferedReader in = new BufferedReader(new InputStreamReader(new InflaterInputStream(connection.getInputStream())))) {
                         String inputLine;
                         while ((inputLine = in.readLine()) != null)
                               txtKetqua.setText(txtKetqua.getText() + inputLine + "\r\n");
-                    } catch(Exception ex){}
+                    }
                     break;
                 default:
                     try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
