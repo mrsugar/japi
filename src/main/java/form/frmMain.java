@@ -25,8 +25,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.zip.GZIPInputStream;
-import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.ResultSet;
 
 /**
  *
@@ -38,8 +43,20 @@ public class frmMain extends javax.swing.JFrame {
     /**
      * Creates new for frmMain
      */
+    Connection conn = null;
+    
     public frmMain() {
         initComponents();
+        
+        // Kết nối db
+        try {
+            conn = DriverManager.getConnection("jdbc:mysql://localhost/dbname?user=dbuser&password=password123");
+        } catch (SQLException ex) {
+            // handle any errors
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+        }
         
         // Hiện giữa màn hình
         this.setLocationRelativeTo(null);
@@ -59,8 +76,27 @@ public class frmMain extends javax.swing.JFrame {
         
         tblParameter.setCellSelectionEnabled(true);
 
-        txtURL.addItem("http://httpbin.org/get");
-        txtURL.addItem("http://httpbin.org/post");
+        try { 
+            // or alternatively, if you don't know ahead of time that
+            // the query will be a SELECT...
+            Statement stmt = conn.createStatement();
+            ResultSet rs = null;
+            if (stmt.execute("SELECT * FROM History LIMIT 60")) {
+                rs = stmt.getResultSet();
+                if(rs.getRow() >= 1){
+                    while(rs.next()){
+                        txtURL.addItem(rs.getString("URL"));
+                    }
+                }else {
+                    txtURL.addItem("http://httpbin.org/get");
+                    txtURL.addItem("http://httpbin.org/post");
+                }
+            }
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch(SQLException ex) {}
+        
         
         toggleDebugMode(true);
 
@@ -564,7 +600,17 @@ public class frmMain extends javax.swing.JFrame {
             Boolean duplicateURL = false;
             for(int i = 0; i < txtURL.getItemCount(); i++)
                 if(txtURL.getItemAt(i).equals(cURL))  duplicateURL = true;
-            if(duplicateURL != true) txtURL.addItem(cURL);
+            if(duplicateURL != true){
+                txtURL.addItem(cURL);
+                try {
+                    Statement stmt = conn.createStatement();
+                    stmt.execute("INSERT INTO History (URL) VALUES ('" + cURL + "')");
+                    stmt.close();
+                    conn.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
         
         try {
