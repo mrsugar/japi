@@ -21,7 +21,7 @@ Sau khi cài đặt xong môi trường Java, chúng ta tiếp tục tải về 
 
 ![Giao diện jAPI](http://i.imgur.com/PbhgsGW.png)
 
-# Hướng dẫn sử dụng 
+# Hướng dẫn sử dụng
 
 ### Debug mode
 Như tên gọi, ở chế độ này, chương trình sẽ hạn chế nhất việc thông báo lỗi và sẽ cố gắng hiển thị tất cả thông tin mà server trả về để người dùng có thể xác định lỗi. Ví dụ header trả về 404 sẽ cho người dùng biết đường dẫn URL này không tồn tại, 403 là đường dẫn bị giới hạn.
