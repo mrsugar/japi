@@ -32,6 +32,7 @@ Một số mã lỗi thông dụng:
 * 400 - Bad Request - Mã lỗi báo trong URL chứa những kí tự đặc biệt, ảnh hưởng đến server, hoặc đường dẫn URL và tham số quá dài.
 * 403 - Forbidden - Đường dẫn này bị quản trị web chặn truy cập từ bên ngoài.
 * 404 - Not Found - Không tìm thấy đường dẫn này.
+
 Có thể xem thêm về các mã lỗi HTTP tại [https://en.wikipedia.org/wiki/List_of_HTTP_status_codes](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
 
 ### Đường dẫn URL
