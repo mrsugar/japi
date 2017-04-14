@@ -1,4 +1,5 @@
-# jAPI - Công cụ hỗ trợ sử dụng API
+# jAPI - Công cụ hỗ trợ sử dụng API [![Build Status](https://travis-ci.org/mrsugar/japi.svg?branch=master)](https://travis-ci.org/mrsugar/japi)
+
 Hiện nay việc sử dụng API đã phổ biến hơn bao giờ hết, từ ứng dụng di động cho tới web-app. Vì vậy, việc có một công cụ hỗ trợ xây dựng, dò lỗi là vô cùng quan trọng. Ứng dụng trên nền Java jAPI được phát triển bởi [Anh Tuấn](https://www.facebook.com/mrsugarvn).
 
 ![Logo jAPI](http://i.imgur.com/1qrepNv.png)
@@ -8,7 +9,7 @@ Hiện nay việc sử dụng API đã phổ biến hơn bao giờ hết, từ �
 * Netbeans
 * phpMyAdmin hoặc SQL Server Studio
 ### Các dịch vụ
-* Máy chủ MySQL hoặc MSSQL (phiên bản tới)
+* Máy chủ MySQL hoặc MSSQL
 * [httpbin.org](http://httpbin.org) cho việc demo
 
 ### Cài đặt môi trường JRE
@@ -18,9 +19,20 @@ Sau khi cài đặt xong môi trường Java, chúng ta tiếp tục tải về 
 
 Để khởi động bạn có thể làm theo cách thông thường là nhấp đúp vào tập tin .jar vừa tải về.
 
-![Giao diện jAPI](http://i.imgur.com/FLtvwj5.png)
+![Giao diện jAPI](http://i.imgur.com/PbhgsGW.png)
 
 # Hướng dẫn sử dụng
+
+### Debug mode
+Như tên gọi, ở chế độ này, chương trình sẽ hạn chế nhất việc thông báo lỗi và sẽ cố gắng hiển thị tất cả thông tin mà server trả về để người dùng có thể xác định lỗi. Ví dụ header trả về 404 sẽ cho người dùng biết đường dẫn URL này không tồn tại, 403 là đường dẫn bị giới hạn.
+
+Một số mã lỗi thông dụng:
+* 200 - OK - Mã thành công, máy chủ trả về dữ liệu mà người dùng yêu cầu.
+* 301 - Moved Permanently - Mã trả về cho thấy địa chỉ web đã được thay đổi vĩnh viễn sang một địa chỉ mới.
+* 400 - Bad Request - Mã lỗi báo trong URL chứa những kí tự đặc biệt, ảnh hưởng đến server, hoặc đường dẫn URL và tham số quá dài.
+* 403 - Forbidden - Đường dẫn này bị quản trị web chặn truy cập từ bên ngoài.
+* 404 - Not Found - Không tìm thấy đường dẫn này.
+Có thể xem thêm về các mã lỗi HTTP tại [https://en.wikipedia.org/wiki/List_of_HTTP_status_codes](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
 
 ### Đường dẫn URL
 Đường dẫn API được cung cấp. Ví dụ `https://httpbin.org`, `https://justawordpresssite.com/wp-json`
