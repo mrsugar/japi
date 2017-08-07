@@ -1,4 +1,4 @@
-# jAPI - Công cụ hỗ trợ sử dụng API [![Build Status](https://travis-ci.org/mrsugar/japi.svg?branch=master)](https://travis-ci.org/mrsugar/japi)
+# jAPI - Công cụ hỗ trợ sử dụng API [![Build Status](https://travis-ci.org/tdtgit/japi.svg?branch=master)](https://travis-ci.org/tdtgit/japi)
 
 Hiện nay việc sử dụng API đã phổ biến hơn bao giờ hết, từ ứng dụng di động cho tới web-app. Vì vậy, việc có một công cụ hỗ trợ xây dựng, dò lỗi là vô cùng quan trọng. Ứng dụng trên nền Java jAPI được phát triển bởi [Anh Tuấn](https://www.facebook.com/mrsugarvn).
 
